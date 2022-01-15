@@ -9,7 +9,7 @@
 	},
 	"wikinotif-newuser-subj": "Notificação de novo usuário para $1",
 	"wikinotif-newuser-body": "Olá, $1,\n\nUma nova conta de usuário, $2, foi criada em $3 em $4.",
-	"wikinotif-newedit-subj": "Notificação de nova modificação para a página $1",
-	"wikinotif-newedit-body": "Olá, $1,\n\nA página $2, foi editada ou criada por $3 em $4 em $5.",
+	"wikinotif-newedit-subj": "Notificação de nova modificação para a página \"$1\"",
+	"wikinotif-newedit-body": "Olá, $1,\n\nA página \"$2\" foi editada ou criada por $3 em $4 em $5.",
 	"wikinotif-desc": "Envia uma notificação por e-mail quando uma conta de usuário é criada ou páginas são editadas ou criadas"
 }

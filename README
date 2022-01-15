@@ -35,7 +35,7 @@ directory, then edit LocalSettings.php and add the following line
 
 	wfLoadExtension( 'WikiNotif' );
 
-== 6. Further configuration ==
+== 4. Further configuration ==
 
 The behaviour of the extension can be tweaked using three configuration
 variables. To override the defaults for these, set them in LocalSettings.php
@@ -59,6 +59,6 @@ $wgWikiNotifEmailTargets
 
 	Defaults to no additional addresses
 
-== 6. Feedback ==
+== 5. Feedback ==
 
 All feedback, bug reports, etc. welcome via https://phabricator.wikimedia.org/tag/mediawiki-extensions-newusernotif/.
