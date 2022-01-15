@@ -1,15 +1,16 @@
 {
-	"name": "New User Email Notification",
-	"version": "1.7.0",
+	"name": "Wiki Email Notification",
+	"version": "0.1",
 	"author": [
 		"Universal Omega",
-		"Rob Church"
+		"Rob Church",
+		"Igor Absorto"
 	],
 	"license-name": "GPL-2.0-or-later",
-	"url": "https://www.mediawiki.org/wiki/Extension:New_User_Email_Notification",
-	"descriptionmsg": "newusernotif-desc",
+	"url": "",
+	"descriptionmsg": "wikinotif-desc",
 	"type": "other",
-	"callback": "NewUserNotifier::onRegistration",
+	"callback": "WikiNotifier::onRegistration",
 	"requires": {
 		"MediaWiki": ">= 1.35.0"
 	},
@@ -19,20 +20,21 @@
 		]
 	},
 	"AutoloadClasses": {
-		"NewUserNotifier": "NewUserNotif.class.php"
+		"WikiNotifier": "WikiNotif.class.php"
 	},
 	"config": {
-		"NewUserNotifTargets": {
+		"WikiNotifTargets": {
 			"value": [ 1 ],
 			"description": "Array containing the usernames or user IDs of those who should receive a notification email. Email will not be sent unless the recipient's email address has been validated, where this is required in the site configuration."
 		},
-		"NewUserNotifEmailTargets": {
+		"WikiNotifEmailTargets": {
 			"value": [],
 			"description": "Array containing email addresses to which a notification should also be sent."
 		}
 	},
 	"Hooks": {
-		"LocalUserCreated": "NewUserNotifier::onLocalUserCreated"
+		"LocalUserCreated": "WikiNotifier::onLocalUserCreated",
+		"RevisionFromEditComplete": "WikiNotifier::onRevisionFromEditComplete"
 	},
 	"manifest_version": 2
 }
