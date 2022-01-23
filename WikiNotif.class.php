@@ -129,7 +129,7 @@ class WikiNotifier {
 			return wfMessage(
 				'wikinotif-newedit-body',
 				$recipient,
-				$page->getTitle()->getText(),
+				$page->getTitle()->getFullUrl(),
 				$user->getName(),
 				$wgSitename,
 				$contentLanguage->timeAndDate( wfTimestampNow() ),
