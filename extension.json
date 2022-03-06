@@ -10,7 +10,7 @@
 	"url": "",
 	"descriptionmsg": "wikinotif-desc",
 	"type": "other",
-	"callback": "WikiNotifier::onRegistration",
+	"callback": "WikiNotif::onRegistration",
 	"requires": {
 		"MediaWiki": ">= 1.35.0"
 	},
@@ -19,22 +19,22 @@
 			"i18n"
 		]
 	},
+	"SpecialPages": {
+		"WikiNotif": "SpecialWikiNotif"
+	},
 	"AutoloadClasses": {
-		"WikiNotifier": "WikiNotif.class.php"
+		"WikiNotif": "WikiNotif.class.php",
+		"SpecialWikiNotif": "SpecialWikiNotif.php" 
+	},
+	"Hooks": {
+		"LocalUserCreated": "WikiNotif::onLocalUserCreated",
+		"RevisionFromEditComplete": "WikiNotif::onRevisionFromEditComplete"
 	},
 	"config": {
 		"WikiNotifTargets": {
 			"value": [ 1 ],
 			"description": "Array containing the usernames or user IDs of those who should receive a notification email. Email will not be sent unless the recipient's email address has been validated, where this is required in the site configuration."
-		},
-		"WikiNotifEmailTargets": {
-			"value": [],
-			"description": "Array containing email addresses to which a notification should also be sent."
 		}
-	},
-	"Hooks": {
-		"LocalUserCreated": "WikiNotifier::onLocalUserCreated",
-		"RevisionFromEditComplete": "WikiNotifier::onRevisionFromEditComplete"
 	},
 	"manifest_version": 2
 }

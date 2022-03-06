@@ -13,7 +13,7 @@
 
 use MediaWiki\MediaWikiServices;
 
-class WikiNotifier {
+class WikiNotif {
 
 	/** @var string */
 	private $sender;
@@ -33,23 +33,55 @@ class WikiNotifier {
 	/**
 	 * Send all email notifications
 	 *
-	 * @param User $user User that was created
+	 * @param User $user User newly created or the author of the new rev
+	 * @param string $type type of the notification, 'new-rev' or 'new-user'
 	 * @param WikiPage $page Page that was edited or created, if applicable
 	 */
-	public function execute( $user, $page = false ) {
-		$this->user = $user;
-		$this->page = $page ?: '';
-		$this->sendExternalMails();
-		$this->sendInternalMails();
+	public function execute( $user, $type, $page = false ) {
+		$this->user   = $user;
+		$this->page   = $page ?: '';
+
+		# Get notification targets based on the type of the action
+		$targets = [];
+		$groups  = $this->getGroups();
+		if ( $type == 'new-user' ) {
+			$targets = $groups['sysop'];
+		} elseif ( $type == 'new-rev' ) {
+			$targets = array_merge( $groups['sysop'], $groups['editor'] );
+		}
+
+		$this->sendExternalMails( $targets );
+		$this->sendInternalMails( $targets );
+	}
+
+	/**
+	 * Get groups of users
+	 * user not part of the sysop or editor groups are ignored
+	 * @return array $groups
+	 */
+	private function getGroups() {
+		global $wgWikiNotifTargets;
+
+		$groups = [];
+		foreach ( $wgWikiNotifTargets as $target ) {
+			$user = $this->makeUser( $target );
+			if ( $user != null ) {
+				if ( in_array( 'sysop', $user->getGroups() ) ) {
+					$groups['sysop'][] = $target;
+				} elseif ( in_array( 'editor', $user->getGroups() ) ) {
+					$groups['editor'][] = $target;
+				}
+			}
+		}
+		wfDebugLog( __METHOD__, 'groups are ' . var_export( $groups, true ) );
+		return $groups;
 	}
 
 	/**
 	 * Send email to external addresses
 	 */
-	private function sendExternalMails() {
-		global $wgWikiNotifEmailTargets;
-
-		foreach ( $wgWikiNotifEmailTargets as $target ) {
+	private function sendExternalMails( $targets ) {
+		foreach ( $targets as $target ) {
 			UserMailer::send(
 				new MailAddress( $target ),
 				new MailAddress( $this->sender ),
@@ -62,12 +94,9 @@ class WikiNotifier {
 	/**
 	 * Send email to users
 	 */
-	private function sendInternalMails() {
-		global $wgWikiNotifTargets;
-
-		foreach ( $wgWikiNotifTargets as $userSpec ) {
-			$user = $this->makeUser( $userSpec );
-
+	private function sendInternalMails( $targets ) {
+		foreach ( $targets as $target ) {
+			$user = $this->makeUser( $target );
 			if ( $user instanceof User && $user->isEmailConfirmed() ) {
 				$user->sendMail(
 					$this->makeSubject( $user->getName(), $this->user, $this->page ),
@@ -107,9 +136,11 @@ class WikiNotifier {
 		global $wgSitename;
 
 		if ( $this->page ) {
-			return wfMessage( 'wikinotif-newedit-subj', $wgSitename )->inContentLanguage()->text();
+			return wfMessage( 'wikinotif-newedit-subj', $wgSitename )
+				->inContentLanguage()->text();
 		}
-		return wfMessage( 'wikinotif-newuser-subj', $wgSitename )->inContentLanguage()->text();
+		return wfMessage( 'wikinotif-newuser-subj', $wgSitename )
+			->inContentLanguage()->text();
 	}
 
 	/**
@@ -164,8 +195,9 @@ class WikiNotifier {
 	 * @param bool $autocreated Whether this was an auto-created account
 	 */
 	public static function onLocalUserCreated( $user, $autocreated ) {
+		$type = 'new-user';
 		$notifier = new self();
-		$notifier->execute( $user );
+		$notifier->execute( $user, $type );
 	}
 
 	/**
@@ -185,7 +217,8 @@ class WikiNotifier {
 		$user,
 		&$tags
 	) {
+		$type = 'new-rev';
 		$notifier = new self();
-		$notifier->execute( $user, $wikiPage );
+		$notifier->execute( $user, $type, $wikiPage );
 	}
 }

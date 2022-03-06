@@ -9,5 +9,6 @@
 	"wikinotif-newuser-body": "Hello $1,\n\nA new user account, $2, has been created on $3 at $4.",
 	"wikinotif-newedit-subj": "New page modification notification for \"$1\"",
 	"wikinotif-newedit-body": "Hello $1,\n\nThe \"$2\" page has been edited or created by $3 on $4 at $5.",
-	"wikinotif-desc": "Sends email notification when user accounts are created or pages are edited or created"
+	"wikinotif-desc": "Sends email notification when user accounts are created or pages are edited or created",
+	"wikinotif-username": "Username"
 }
